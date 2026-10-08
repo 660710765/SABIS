@@ -1,0 +1,94 @@
+/* Genertech Payroll — theme from palette: navy #052a42 · deep blue #034467 · steel #5591a8 · aqua #9cccdb · mist #ccd6de */
+:root {
+  --navy: #052a42; --deep: #034467; --steel: #5591a8; --aqua: #9cccdb; --mist: #ccd6de;
+  --surface: #f2f5f7; --surface-raised: #ffffff; --surface-sunken: #e9eef2;
+  --line: #d3dce2; --line-strong: #7f909c;
+  --ink: #0b1f2c; --ink-muted: #4f6170;
+  --brand: #034467; --brand-soft: #e1eef4; --on-brand: #ffffff;
+  --amber: #9a5300; --amber-soft: #fbeedb; --on-amber: #ffffff;
+  --success: #1f6e2e; --success-soft: #e2f2e5;
+  --danger: #b0261b; --danger-soft: #fbe6e3; --on-danger: #ffffff;
+  --info: #1b5a9e; --info-soft: #e3edf9;
+  --focus: var(--steel); --link: var(--brand);
+  --nav-bg: #052a42; --nav-ink: #ccd6de; --nav-sec: #9cccdb; --nav-hover: #0a3550; --nav-active: #034467; --nav-active-ink: #ffffff; --nav-line: #164059;
+  --font-sans: "IBM Plex Sans Thai", "Noto Sans Thai", system-ui, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+  --space-1: 4px; --space-2: 8px; --space-3: 12px; --space-4: 16px; --space-5: 24px; --space-6: 32px; --space-7: 48px;
+  --radius-sm: 2px; --radius-md: 3px; --radius-lg: 4px;
+  --control-h: 40px; --touch-h: 56px; --content-max: 1200px;
+  --shadow-pop: 0 6px 20px rgba(5,42,66,0.16);
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --surface: #041d2e; --surface-raised: #072a40; --surface-sunken: #031522;
+    --line: #18405a; --line-strong: #5f8296;
+    --ink: #e6eef3; --ink-muted: #9db4c2;
+    --brand: #9cccdb; --brand-soft: #0d3a55; --on-brand: #052a42;
+    --amber: #f2ab52; --amber-soft: #3d2a10; --on-amber: #1a1205;
+    --success: #79d18d; --success-soft: #13301b;
+    --danger: #ff8f80; --danger-soft: #3e1611; --on-danger: #1c0805;
+    --info: #86b8f0; --info-soft: #11294a;
+    --focus: var(--aqua);
+    --nav-bg: #031522; --nav-hover: #072a40; --nav-active: #0d3a55; --nav-line: #12354b;
+    --shadow-pop: 0 6px 20px rgba(0,0,0,0.5);
+  }
+}
+
+/* Squarer corners for marks the component stylesheet draws round */
+.gp-seg-opt, .gp-notice-g, .gp-step-m { border-radius: var(--radius-sm); }
+.gp-badge-dot { border-radius: 0; }
+.gp-step { border-top-width: 2px; }
+.gp-btn { letter-spacing: 0.01em; }
+
+/* Shared app shell */
+.gt-app { display: flex; flex-wrap: wrap; min-height: 100vh; background: var(--surface); color: var(--ink); font-family: var(--font-sans); }
+.gt-nav { flex: 1 1 232px; max-width: 100%; box-sizing: border-box; padding: var(--space-5) var(--space-3); background: var(--nav-bg); color: var(--nav-ink); display: flex; flex-direction: column; gap: var(--space-5); }
+.gt-main { flex: 999 1 560px; min-width: 0; box-sizing: border-box; padding: var(--space-6) var(--space-6) var(--space-7); }
+.gt-wrap { max-width: var(--content-max); margin: 0 auto; display: flex; flex-direction: column; gap: var(--space-5); }
+.gt-logo { display: flex; align-items: center; gap: 10px; padding: 0 var(--space-3) var(--space-4); border-bottom: 1px solid var(--nav-line); font-weight: 600; font-size: 16px; line-height: 24px; color: #ffffff; letter-spacing: 0.01em; }
+.gt-logo::before { content: ""; width: 14px; height: 14px; background: var(--aqua); box-shadow: 5px 5px 0 var(--steel); flex: none; margin-right: 5px; }
+.gt-nav-list { display: flex; flex-direction: column; gap: 2px; }
+.gt-nav a { display: block; padding: 9px var(--space-3); border-radius: var(--radius-sm); color: var(--nav-ink); text-decoration: none; font-size: 14px; line-height: 22px; }
+.gt-nav a:hover { background: var(--nav-hover); color: #ffffff; }
+.gt-nav a.is-on { background: var(--nav-active); color: var(--nav-active-ink); font-weight: 600; }
+.gt-nav-sec { font-size: 12px; line-height: 18px; font-weight: 500; color: var(--nav-sec); padding: 0 var(--space-3); margin-top: var(--space-3); letter-spacing: 0.02em; }
+.gt-user { margin-top: auto; padding: var(--space-3); border-top: 1px solid var(--nav-line); font-size: 13px; line-height: 20px; color: var(--nav-ink); }
+.gt-user b { display: block; font-size: 14px; color: #ffffff; }
+.gt-user .gt-muted { color: var(--nav-sec); }
+.gt-muted { color: var(--ink-muted); }
+.gt-head { display: flex; flex-wrap: wrap; gap: var(--space-4); align-items: flex-end; justify-content: space-between; padding-bottom: var(--space-4); border-bottom: 1px solid var(--line); }
+.gt-h1 { margin: 0; font-size: 28px; line-height: 40px; font-weight: 600; letter-spacing: -0.005em; }
+.gt-h2 { margin: 0; font-size: 20px; line-height: 30px; font-weight: 600; }
+.gt-h3 { margin: 0; font-size: 16px; line-height: 24px; font-weight: 600; }
+.gt-sub { margin: 0; font-size: 14px; line-height: 22px; color: var(--ink-muted); }
+.gt-card { background: var(--surface-raised); border: 1px solid var(--line); border-radius: var(--radius-lg); padding: var(--space-5); display: flex; flex-direction: column; gap: var(--space-4); min-width: 0; }
+.gt-tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 0; background: var(--surface-raised); border: 1px solid var(--line); border-radius: var(--radius-lg); }
+.gt-tile { padding: var(--space-4) var(--space-5); display: flex; flex-direction: column; gap: 2px; border-right: 1px solid var(--line); }
+.gt-tile:last-child { border-right: 0; }
+.gt-tile-k { font-size: 13px; line-height: 20px; font-weight: 500; color: var(--ink-muted); }
+.gt-tile-v { font-family: var(--font-mono); font-size: 26px; line-height: 36px; font-weight: 500; font-variant-numeric: tabular-nums; color: var(--ink); }
+.gt-tile-n { font-size: 13px; line-height: 20px; color: var(--ink-muted); }
+.gt-cols { display: flex; flex-wrap: wrap; gap: var(--space-5); align-items: flex-start; }
+.gt-col-main { flex: 999 1 560px; min-width: 0; display: flex; flex-direction: column; gap: var(--space-5); }
+.gt-col-side { flex: 1 1 320px; min-width: 0; display: flex; flex-direction: column; gap: var(--space-5); }
+.gt-actions { display: flex; flex-wrap: wrap; gap: var(--space-2); align-items: flex-start; }
+.gt-row { display: flex; gap: var(--space-3); align-items: center; flex-wrap: wrap; }
+.gt-between { display: flex; gap: var(--space-3); align-items: center; justify-content: space-between; flex-wrap: wrap; }
+.gt-list { display: flex; flex-direction: column; }
+.gt-li { display: flex; gap: var(--space-3); align-items: center; justify-content: space-between; padding: var(--space-3) 0; border-bottom: 1px solid var(--line); font-size: 14px; line-height: 22px; }
+.gt-li:last-child { border-bottom: 0; }
+.gt-mono { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+.gt-tbl-wrap { overflow-x: auto; border: 1px solid var(--line); border-radius: var(--radius-lg); background: var(--surface-raised); }
+.gt-tbl { width: 100%; border-collapse: collapse; font-size: 14px; line-height: 20px; }
+.gt-tbl th { font-size: 13px; font-weight: 500; color: var(--ink-muted); background: var(--surface-sunken); text-align: left; padding: var(--space-2) var(--space-3); white-space: nowrap; border-bottom: 1px solid var(--line); }
+.gt-tbl td { padding: var(--space-3); border-bottom: 1px solid var(--line); white-space: nowrap; vertical-align: middle; }
+.gt-tbl tbody tr:hover td { background: var(--surface); }
+.gt-tbl tr:last-child td { border-bottom: 0; }
+.gt-tbl .num { text-align: right; }
+.gt-flag { color: var(--danger); font-weight: 500; }
+.gt-ot { color: var(--amber); font-weight: 500; }
+
+/* Phone header bar */
+.gt-phone-bar { display: flex; justify-content: space-between; align-items: center; padding: 14px 16px; background: var(--nav-bg); color: #ffffff; }
+.gt-phone-bar .gt-logo { padding: 0; border: 0; font-size: 15px; }
+.gt-phone-bar .gt-sub { color: var(--nav-sec); font-size: 13px; }
