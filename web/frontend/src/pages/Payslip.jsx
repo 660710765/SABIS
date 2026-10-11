@@ -3,9 +3,18 @@ import { useEffect, useState } from 'react';
 import { api } from '../api.js';
 import { fmt, num, periodLabel } from '../format.js';
 import { useRun } from '../components/toast.jsx';
-import { EmptyState, Money, Notice, PageHead, PayTag, StatusBadge } from '../components/ui.jsx';
+import { Button, EmptyState, Money, Notice, PageHead, PayTag, StatusBadge } from '../components/ui.jsx';
 
 const Line = ({ label, amount }) => <div className="gp-slip-line"><span>{label}</span><Money amount={amount} /></div>;
+
+// Opens the print dialog with only the slip (.print-area); "Save as PDF" downloads it.
+// The page title becomes the suggested file name, e.g. สลิปเงินเดือน-EMP-0142-2569-10-รอบ2.
+function downloadSlip(e, s) {
+  const prev = document.title;
+  document.title = `สลิปเงินเดือน-${e.code}-${s.year + 543}-${String(s.month).padStart(2, '0')}-รอบ${s.round}`;
+  window.addEventListener('afterprint', () => { document.title = prev; }, { once: true });
+  window.print();
+}
 
 export default function Payslip() {
   const run = useRun();
@@ -32,7 +41,8 @@ export default function Payslip() {
     <>
       <PageHead kicker="สลิปเงินเดือน (e-Payslip)" title={e.name} />
       <div className="slip-wrap">
-        <article className="gp-slip">
+        <article className="gp-slip print-area">
+          <p className="print-only gp-slip-co">หจก. Genertech Engineering</p>
           <header className="gp-slip-h">
             <div><p className="gp-slip-k">สลิปเงินเดือน (e-Payslip)</p><p className="gp-slip-p">{periodLabel(s)}</p></div>
             <StatusBadge status={s.status} />
@@ -57,6 +67,10 @@ export default function Payslip() {
             <Money amount={s.net} lg unit />
           </footer>
         </article>
+
+        <div className="gt-actions no-print">
+          <Button variant="primary" onClick={() => downloadSlip(e, s)}>ดาวน์โหลดสลิป (PDF)</Button>
+        </div>
 
         {s.status === 'approved' && (
           <Notice tone="info" title={channel === 'cash' ? 'รับเงินสดในวันจ่ายของรอบนี้' : 'โอนเข้าบัญชีในวันจ่ายของรอบนี้'}>

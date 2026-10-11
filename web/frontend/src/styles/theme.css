@@ -18,7 +18,7 @@
   --control-h: 40px; --touch-h: 56px; --content-max: 1200px;
   --shadow-pop: 0 6px 20px rgba(5,42,66,0.16);
 }
-@media (prefers-color-scheme: dark) {
+@media screen and (prefers-color-scheme: dark) { /* print always uses the light palette */
   :root {
     --surface: #041d2e; --surface-raised: #072a40; --surface-sunken: #031522;
     --line: #18405a; --line-strong: #5f8296;

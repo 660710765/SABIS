@@ -70,4 +70,8 @@ select.gp-input { appearance: none; padding-right: 32px; background-image: linea
   .print-area, .print-area * { visibility: visible; }
   .print-area { position: absolute; inset: 0 auto auto 0; width: 100%; border: 0; }
   .no-print { display: none !important; }
+  .print-only { display: block; }
+  .gp-slip.print-area { max-width: 520px; border: 1px solid var(--line); }
 }
+.print-only { display: none; }
+.gp-slip-co { margin: 0; padding: var(--space-4) var(--space-5) 0; font-weight: 600; }
