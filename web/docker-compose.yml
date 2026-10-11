@@ -1,0 +1,59 @@
+# The whole system in one command:  docker compose up -d --build
+#
+#   Web (React + API)  http://localhost:5173
+#   pgAdmin            http://localhost:5050   login admin@example.com / admin123 (from .env)
+#   PostgreSQL         localhost:5433          user payroll / password payroll   database payroll
+#
+# Port 5433 avoids clashing with a PostgreSQL already installed on 5432.
+services:
+  db:
+    image: postgres:18
+    environment:
+      POSTGRES_USER: payroll
+      POSTGRES_PASSWORD: payroll
+      POSTGRES_DB: payroll
+    ports:
+      - "5433:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U payroll"]
+      interval: 3s
+      retries: 20
+
+  backend:
+    build: ./backend
+    environment:
+      DATABASE_URL: postgres://payroll:payroll@db:5432/payroll?sslmode=disable
+      PORT: "8080"
+      TZ: Asia/Bangkok
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: unless-stopped
+
+  frontend:
+    build: ./frontend
+    ports:
+      - "5173:80"
+    depends_on:
+      - backend
+    restart: unless-stopped
+
+  pgadmin:
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL:-admin@example.com}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD:-admin123}
+      PGADMIN_CONFIG_SERVER_MODE: "True"
+    ports:
+      - "5050:80"
+    volumes:
+      - pgadmin:/var/lib/pgadmin
+      - ./pgadmin-servers.json:/pgadmin4/servers.json:ro
+    depends_on:
+      - db
+
+volumes:
+  pgdata:
+  pgadmin:
