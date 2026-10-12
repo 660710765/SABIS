@@ -157,7 +157,7 @@ export function PayrollTable({ detail, selected, onEdit }) {
               <td className="num">{amt(neg(r.deduction), { signed: true })}</td>
               <td className="num">{amt(neg(r.tax))}</td>
               <td className="num" style={{ fontWeight: 500 }}>{amt(r.net)}</td>
-              {onEdit && <td><button type="button" className="link-btn" onClick={() => onEdit(r.employee_id)}>แก้ไข</button></td>}
+              {onEdit && <td><button type="button" className="link-btn edit-btn" onClick={() => onEdit(r.employee_id)}>แก้ไข</button></td>}
             </tr>
           ))}
         </tbody>

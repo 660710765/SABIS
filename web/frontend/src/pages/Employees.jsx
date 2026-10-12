@@ -4,8 +4,6 @@ import { api } from '../api.js';
 import { useRun } from '../components/toast.jsx';
 import { Button, Field, Money, PageHead, PayTag } from '../components/ui.jsx';
 
-const BLANK = { name: '', type: 'monthly', rate: '', bank: '', account: '', active: 1 };
-
 export default function Employees() {
   const run = useRun();
   const [list, setList] = useState(null);
@@ -18,11 +16,8 @@ export default function Employees() {
   const emp = list.find((e) => e.id === selId) || null;
 
   const save = (body) => run(async () => {
-    const saved = emp
-      ? await api('PATCH', `/api/employees/${emp.id}`, body)
-      : await api('POST', '/api/employees', body);
+    await api('PATCH', `/api/employees/${emp.id}`, body);
     await load();
-    setSelId(saved.id);
   }, 'บันทึกข้อมูลพนักงานแล้ว');
 
   return (
@@ -42,33 +37,34 @@ export default function Employees() {
                     <td className="num"><Money amount={e.rate} /> <span className="gt-muted" style={{ fontSize: 12 }}>{e.type === 'monthly' ? '/เดือน' : '/วัน'}</span></td>
                     <td>{e.bank ? <>{e.bank} <span className="gp-code">{e.account}</span></> : <span className="gt-muted">เงินสด</span>}</td>
                     <td>{e.active ? 'ทำงานอยู่' : <span className="gt-muted">พ้นสภาพ</span>}</td>
-                    <td><button type="button" className="link-btn" onClick={() => setSelId(e.id)}>แก้ไข</button></td>
+                    <td><button type="button" className="link-btn edit-btn" onClick={() => setSelId(e.id)}>แก้ไข</button></td>
                   </tr>
                 ))}
               </tbody>
             </table>
           </div>
-          <p className="gt-sub">อัตราที่เปลี่ยนจะใช้กับรอบที่ประมวลผลหลังจากนี้ รอบที่ประมวลผลแล้วเก็บอัตราเดิมไว้ พนักงานใหม่เข้าระบบด้วยรหัสพนักงาน รหัสผ่านเริ่มต้น 1234</p>
+          <p className="gt-sub">อัตราที่เปลี่ยนจะใช้กับรอบที่ประมวลผลหลังจากนี้ รอบที่ประมวลผลแล้วเก็บอัตราเดิมไว้</p>
         </div>
         <div className="gt-col-side">
-          <EmployeeForm key={emp ? emp.id : 'new'} emp={emp} onSave={save} onNew={() => setSelId(null)} />
+          {emp
+            ? <EmployeeForm key={emp.id} emp={emp} onSave={save} onClose={() => setSelId(null)} />
+            : <div className="gt-card"><p className="gt-sub" style={{ margin: 0 }}>กด "แก้ไข" ที่แถวของพนักงานเพื่อแก้ไขข้อมูลและอัตราค่าจ้าง</p></div>}
         </div>
       </div>
     </>
   );
 }
 
-function EmployeeForm({ emp, onSave, onNew }) {
-  const [form, setForm] = useState(() => emp
-    ? { name: emp.name, type: emp.type, rate: emp.rate, bank: emp.bank || '', account: emp.account || '', active: emp.active }
-    : BLANK);
+function EmployeeForm({ emp, onSave, onClose }) {
+  const [form, setForm] = useState(() => (
+    { name: emp.name, type: emp.type, rate: emp.rate, bank: emp.bank || '', account: emp.account || '', active: emp.active }));
   const set = (k) => (e) => setForm((f) => ({ ...f, [k]: e.target.value }));
 
   return (
     <form className="gt-card" onSubmit={(e) => { e.preventDefault(); onSave({ ...form, active: Number(form.active) }); }}>
       <div className="gt-between">
-        <h2 className="gt-h3">{emp ? `แก้ไข ${emp.code}` : 'เพิ่มพนักงาน'}</h2>
-        {emp && <button type="button" className="link-btn" onClick={onNew}>เพิ่มคนใหม่</button>}
+        <h2 className="gt-h3">แก้ไข {emp.code}</h2>
+        <button type="button" className="link-btn" onClick={onClose}>ปิด</button>
       </div>
       <Field label="ชื่อ-สกุล" required value={form.name} onChange={set('name')} />
       <Field label="ประเภทการจ้าง" value={form.type} onChange={set('type')}
@@ -77,9 +73,9 @@ function EmployeeForm({ emp, onSave, onNew }) {
         hint="รายเดือน = เงินเดือนต่อเดือน · รายวัน = ค่าจ้างต่อวัน" />
       <Field label="ธนาคาร" value={form.bank} onChange={set('bank')} hint="จำเป็นสำหรับพนักงานรายเดือน (BR-03)" />
       <Field label="เลขบัญชี" value={form.account} onChange={set('account')} />
-      {emp && <Field label="สถานะ" value={form.active} onChange={set('active')}
-        options={[[1, 'ทำงานอยู่'], [0, 'พ้นสภาพ (ไม่ดึงเข้ารอบใหม่)']]} />}
-      <Button type="submit" variant="primary" block>{emp ? 'บันทึกการแก้ไข' : 'เพิ่มพนักงาน'}</Button>
+      <Field label="สถานะ" value={form.active} onChange={set('active')}
+        options={[[1, 'ทำงานอยู่'], [0, 'พ้นสภาพ (ไม่ดึงเข้ารอบใหม่)']]} />
+      <Button type="submit" variant="primary" block>บันทึกการแก้ไข</Button>
     </form>
   );
 }

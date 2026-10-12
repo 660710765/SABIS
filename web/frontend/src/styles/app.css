@@ -42,6 +42,8 @@ select.gp-input { appearance: none; padding-right: 32px; background-image: linea
 .link-btn { font: inherit; font-size: 14px; background: none; border: 0; color: var(--link); cursor: pointer; padding: 4px 6px; border-radius: var(--radius-sm); }
 .link-btn:hover { background: var(--brand-soft); }
 .link-btn:disabled { color: var(--ink-muted); cursor: not-allowed; background: none; }
+.link-btn.edit-btn { background: var(--danger-soft); color: var(--danger); }
+.link-btn.edit-btn:hover { background: #f6cfca; }
 
 /* Period list cards */
 .plist { display: flex; flex-direction: column; border: 1px solid var(--line); border-radius: var(--radius-lg); background: var(--surface-raised); }

@@ -56,7 +56,6 @@ func New(db *store.Store) http.Handler {
 	route("GET /api/my/payslips", s.myPayslips, emp)
 
 	route("GET /api/employees", s.employees, acc)
-	route("POST /api/employees", s.createEmployee, acc)
 	route("PATCH /api/employees/{id}", s.updateEmployee, acc)
 
 	route("/api/", func(http.ResponseWriter, *http.Request, *store.User) error {
@@ -413,20 +412,6 @@ func employeeInput(b map[string]any, base store.EmployeeInput) store.EmployeeInp
 		in.Active = f != 0
 	}
 	return in
-}
-
-func (s *Server) createEmployee(w http.ResponseWriter, r *http.Request, _ *store.User) error {
-	b, err := readBody(r)
-	if err != nil {
-		return err
-	}
-	in := employeeInput(b, store.EmployeeInput{Active: true})
-	e, err := s.db.CreateEmployee(r.Context(), in)
-	if err != nil {
-		return err
-	}
-	writeJSON(w, 201, e)
-	return nil
 }
 
 func (s *Server) updateEmployee(w http.ResponseWriter, r *http.Request, _ *store.User) error {
