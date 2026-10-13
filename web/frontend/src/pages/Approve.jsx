@@ -41,7 +41,7 @@ export default function Approve() {
       <Tiles totals={detail.totals} processed />
 
       <div className="gt-cols">
-        <div className="gt-col-main"><PayrollTable detail={detail} /></div>
+        <div className="gt-col-main gt-col-wide"><PayrollTable detail={detail} /></div>
         <div className="gt-col-side">
           <section className="gt-card">
             {p.status === 'pending' ? (

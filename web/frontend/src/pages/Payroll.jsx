@@ -1,5 +1,5 @@
 // UC-04 – UC-07: accounting calculates a round, corrects inputs with a reason, and submits it.
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { api } from '../api.js';
 import { MONTHS, lastDay, periodLabel } from '../format.js';
 import { useRun } from '../components/toast.jsx';
@@ -81,7 +81,7 @@ export default function Payroll() {
       <Tiles totals={detail.totals} processed={p.processed} />
 
       <div className="gt-cols">
-        <div className="gt-col-main">
+        <div className="gt-col-main gt-col-wide">
           <PayrollTable detail={detail} selected={editing} onEdit={editable ? setEditing : undefined} />
           {editable && (
             <div className="gt-between">
@@ -132,9 +132,12 @@ function EditPanel({ row, processed, onSave, onClose }) {
   });
   const set = (k) => (e) => setForm((f) => ({ ...f, [k]: e.target.value }));
   const num = { type: 'number', min: 0, step: 0.5 };
+  // When the panel has wrapped below the wide table, bring it into view.
+  const ref = useRef(null);
+  useEffect(() => { ref.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest' }); }, []);
 
   return (
-    <form className="gt-card" onSubmit={async (e) => {
+    <form ref={ref} className="gt-card" onSubmit={async (e) => {
       e.preventDefault();
       if (await onSave(form)) setForm((f) => ({ ...f, reason: '' }));
     }}>

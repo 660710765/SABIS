@@ -132,7 +132,7 @@ export function PayrollTable({ detail, selected, onEdit }) {
   const neg = (n) => (n ? -n : 0);
   return (
     <div className="gt-tbl-wrap">
-      <table className="gt-tbl">
+      <table className="gt-tbl gt-tbl-wraphead">
         <caption>รายการเงินเดือน {periodLabel(period)}</caption>
         <thead>
           <tr>

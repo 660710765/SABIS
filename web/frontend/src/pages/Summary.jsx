@@ -8,7 +8,7 @@ import { EmptyState, Field, Money, PageHead, StatusBadge } from '../components/u
 
 function CostTiles({ cost }) {
   return (
-    <div className="gt-tiles">
+    <div className="gt-tiles" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(170px, 1fr))' }}>
       <div className="gt-tile"><span className="gt-tile-k">ค่าจ้างรวมก่อนภาษี</span><span className="gt-tile-v">{fmt(cost.gross)}</span><span className="gt-tile-n">บาท · {cost.employees} คน</span></div>
       <div className="gt-tile"><span className="gt-tile-k">ยอดจ่ายสุทธิ</span><span className="gt-tile-v">{fmt(cost.net)}</span><span className="gt-tile-n">ภาษีหัก ณ ที่จ่าย {fmt(cost.tax)} บาท</span></div>
       <div className="gt-tile"><span className="gt-tile-k">โอนเข้าบัญชี (รายเดือน)</span><span className="gt-tile-v" style={{ color: 'var(--brand)' }}>{fmt(cost.monthly_net)}</span><span className="gt-tile-n">{cost.monthly} คน</span></div>
@@ -25,7 +25,6 @@ function CostCells({ c }) {
       <td className="num"><Money amount={c.base} /></td>
       <td className="num"><Money amount={c.ot_pay} signed /></td>
       <td className="num"><Money amount={c.deduction ? -c.deduction : 0} signed /></td>
-      <td className="num"><Money amount={c.gross} /></td>
       <td className="num"><Money amount={c.tax ? -c.tax : 0} /></td>
       <td className="num" style={{ fontWeight: 500 }}><Money amount={c.net} /></td>
       <td className="num"><Money amount={c.monthly_net} /></td>
@@ -77,28 +76,27 @@ export default function Summary() {
       )}
 
       <div className="gt-tbl-wrap">
-        <table className="gt-tbl">
+        <table className="gt-tbl gt-tbl-compact">
           <caption>ค่าใช้จ่ายเงินเดือนรายรอบ ปี {thai(data.year)} (เฉพาะรอบที่อนุมัติหรือจ่ายแล้ว)</caption>
           <thead>
             <tr>
-              <th>รอบการจ่าย</th><th>สถานะ</th><th className="num">พนักงาน (คน)</th>
+              <th>รอบการจ่าย / สถานะ</th><th className="num">พนักงาน (คน)</th>
               <th className="num">ฐานค่าจ้าง</th><th className="num">เงินเพิ่ม (OT)</th><th className="num">หักขาดงาน</th>
-              <th className="num">รวมก่อนภาษี</th><th className="num">ภาษีหัก ณ ที่จ่าย</th><th className="num">สุทธิ (บาท)</th>
+              <th className="num">ภาษีหัก ณ ที่จ่าย</th><th className="num">สุทธิ (บาท)</th>
               <th className="num">โอน (รายเดือน)</th><th className="num">เงินสด (รายวัน)</th>
             </tr>
           </thead>
           <tbody>
             {data.rounds.map((r) => (
               <tr key={r.period_id}>
-                <td>{periodLabel(r)}</td>
-                <td><StatusBadge status={r.status} /></td>
+                <td><span className="sum-round">{periodLabel(r)}<StatusBadge status={r.status} /></span></td>
                 <CostCells c={r} />
               </tr>
             ))}
           </tbody>
           <tfoot>
             <tr>
-              <td colSpan={2}>รวมทั้งปี {data.rounds.length} รอบ</td>
+              <td>รวมทั้งปี {data.rounds.length} รอบ</td>
               <CostCells c={data.total} />
             </tr>
           </tfoot>

@@ -48,7 +48,7 @@ export default function Disburse() {
       <div className="gt-cols">
         <section className="gt-card" style={{ flex: '1 1 420px' }}>
           <div className="gt-between">
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}><PayTag kind="transfer" /><h2 className="gt-h2">พนักงานรายเดือน · {monthly.length} คน</h2></div>
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: 4 }}><PayTag kind="transfer" /><h2 className="gt-h2">พนักงานรายเดือน · {monthly.length} คน</h2></div>
             <Money amount={t.monthlyNet} lg unit />
           </div>
           <PayList rows={monthly} detailOf={(r) => `${r.bank} ${r.account}`} />
@@ -59,7 +59,7 @@ export default function Disburse() {
 
         <section className="gt-card print-area" style={{ flex: '1 1 420px' }}>
           <div className="gt-between">
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: 4 }}>
               <PayTag kind="cash" /><h2 className="gt-h2">พนักงานรายวัน · {daily.length} คน</h2><span className="gt-sub">{periodLabel(p)}</span>
             </div>
             <Money amount={t.dailyNet} lg unit />
@@ -71,7 +71,7 @@ export default function Disburse() {
 
       <section className="gt-card no-print">
         <div className="gt-between">
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: 4 }}>
             <h2 className="gt-h3">ยืนยันการสั่งจ่าย</h2>
             <p className="gt-sub">กดยืนยันหลังโอนเงินและจ่ายเงินสดครบทุกช่องทางแล้ว ระบบจะเปลี่ยนสถานะเป็น "จ่ายเงินเรียบร้อยแล้ว" และออก e-Payslip</p>
           </div>

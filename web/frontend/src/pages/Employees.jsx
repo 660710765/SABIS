@@ -26,7 +26,7 @@ export default function Employees() {
       <div className="gt-cols">
         <div className="gt-col-main">
           <div className="gt-tbl-wrap">
-            <table className="gt-tbl">
+            <table className="gt-tbl gt-tbl-compact">
               <thead><tr><th>รหัส</th><th>ชื่อ-สกุล</th><th>ประเภท</th><th className="num">อัตราค่าจ้าง</th><th>บัญชีรับเงิน</th><th>สถานะ</th><th /></tr></thead>
               <tbody>
                 {list.map((e) => (
@@ -35,7 +35,7 @@ export default function Employees() {
                     <td>{e.name}</td>
                     <td><PayTag kind={e.type} /></td>
                     <td className="num"><Money amount={e.rate} /> <span className="gt-muted" style={{ fontSize: 12 }}>{e.type === 'monthly' ? '/เดือน' : '/วัน'}</span></td>
-                    <td>{e.bank ? <>{e.bank} <span className="gp-code">{e.account}</span></> : <span className="gt-muted">เงินสด</span>}</td>
+                    <td>{e.bank ? <>{e.bank}<br /><span className="gp-code">{e.account}</span></> : <span className="gt-muted">เงินสด</span>}</td>
                     <td>{e.active ? 'ทำงานอยู่' : <span className="gt-muted">พ้นสภาพ</span>}</td>
                     <td><button type="button" className="link-btn edit-btn" onClick={() => setSelId(e.id)}>แก้ไข</button></td>
                   </tr>

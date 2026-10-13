@@ -39,6 +39,16 @@ select.gp-input { appearance: none; padding-right: 32px; background-image: linea
 .gt-tbl tr.is-sel td { background: var(--brand-soft); }
 .gt-tbl tfoot td { background: var(--surface-sunken); font-weight: 600; border-top: 1px solid var(--line); border-bottom: 0; }
 .gt-tbl caption { text-align: left; padding: var(--space-3) var(--space-3) var(--space-2); font-weight: 600; font-size: 16px; line-height: 24px; }
+/* Wide tables: headers may wrap, and the side card moves below the table when both don't fit */
+.gt-tbl-wraphead th, .gt-tbl-compact th { white-space: normal; vertical-align: bottom; }
+.gt-col-wide { flex-basis: 900px; }
+/* Compact table (executive summary): many money columns must fit a 1280px screen */
+.gt-tbl-compact th { padding: var(--space-2); }
+.gt-tbl-compact td { padding: var(--space-2); }
+.gt-tbl-compact th:first-child, .gt-tbl-compact td:first-child { padding-left: var(--space-3); }
+.gt-tbl-compact th:last-child, .gt-tbl-compact td:last-child { padding-right: var(--space-3); }
+.gt-tbl-compact .gp-money { font-size: 13px; }
+.sum-round { display: flex; flex-direction: column; align-items: flex-start; gap: 2px; }
 .link-btn { font: inherit; font-size: 14px; background: none; border: 0; color: var(--link); cursor: pointer; padding: 4px 6px; border-radius: var(--radius-sm); }
 .link-btn:hover { background: var(--brand-soft); }
 .link-btn:disabled { color: var(--ink-muted); cursor: not-allowed; background: none; }
