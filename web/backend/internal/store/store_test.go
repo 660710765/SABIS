@@ -11,6 +11,8 @@ import (
 	"time"
 
 	"github.com/jackc/pgx/v5"
+
+	"genertech/payroll/internal/payroll"
 )
 
 // openTest opens the store in a throw-away schema of TEST_DATABASE_URL, so tests
@@ -198,5 +200,78 @@ func TestLoginAndEmployees(t *testing.T) {
 	}
 	if su, _ := s.SessionUser(ctx, token, time.Hour); su != nil {
 		t.Error("session still valid after logout")
+	}
+}
+
+// Executive report: only approved/paid rounds count, and totals match the round detail.
+func TestCostSummary(t *testing.T) {
+	s := openTest(t)
+	ctx := context.Background()
+	paid, err := s.FindPeriod(ctx, 2026, 10, 1) // seeded as paid
+	if err != nil || paid == nil {
+		t.Fatalf("seed period: %v %v", paid, err)
+	}
+	draft, _ := s.FindPeriod(ctx, 2026, 10, 2) // processed but still draft
+	if err := s.ProcessPeriod(ctx, draft.ID, accountant); err != nil {
+		t.Fatal(err)
+	}
+	nov, err := s.CreatePeriod(ctx, 2026, 11, 1, accountant) // processed and pending
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err := s.ProcessPeriod(ctx, nov, accountant); err != nil {
+		t.Fatal(err)
+	}
+	if err := s.SubmitPeriod(ctx, nov, accountant); err != nil {
+		t.Fatal(err)
+	}
+
+	sum, err := s.CostSummary(ctx, 0)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if sum.Year != 2026 || len(sum.Rounds) != 1 || sum.Rounds[0].PeriodID != paid.ID {
+		t.Fatalf("summary = %+v, want only the paid round %d of 2026", sum, paid.ID)
+	}
+	d, err := s.PeriodDetail(ctx, paid.ID)
+	if err != nil {
+		t.Fatal(err)
+	}
+	var base float64
+	for _, r := range d.Rows {
+		base += val(r.Base)
+	}
+	got, want := sum.Rounds[0].CostTotals, d.Totals
+	if got.Employees != want.Count || got.Monthly != want.Monthly || got.Daily != want.Daily ||
+		got.Base != payroll.Round2(base) || got.OTPay != want.OTPay || got.Deduction != want.Deduction || got.Tax != want.Tax ||
+		got.Net != want.Net || got.MonthlyNet != want.MonthlyNet || got.DailyNet != want.DailyNet ||
+		got.Gross != payroll.Round2(got.Base+got.OTPay-got.Deduction) {
+		t.Errorf("round totals = %+v, want %+v (base %v)", got, want, base)
+	}
+	if sum.Total != got {
+		t.Errorf("year total = %+v, want the single round %+v", sum.Total, got)
+	}
+
+	// Once approved, November counts too; a person paid in both rounds is one head in the year total.
+	if err := s.ApprovePeriod(ctx, nov, manager); err != nil {
+		t.Fatal(err)
+	}
+	sum, err = s.CostSummary(ctx, 2026)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(sum.Rounds) != 2 || sum.Rounds[0].PeriodID != nov {
+		t.Fatalf("rounds = %+v, want November first then October", sum.Rounds)
+	}
+	if sum.Total.Employees != 6 || sum.Total.Net != payroll.Round2(sum.Rounds[0].Net+sum.Rounds[1].Net) {
+		t.Errorf("year total = %+v, want 6 people and the sum of both rounds", sum.Total)
+	}
+
+	if empty, err := s.CostSummary(ctx, 2025); err != nil || len(empty.Rounds) != 0 || empty.Total.Net != 0 {
+		t.Errorf("year without rounds: %+v %v", empty, err)
+	}
+
+	if u, _, err := s.Login(ctx, "somchai", "1234", time.Hour); err != nil || u.Role != "executive" {
+		t.Errorf("executive login: %v %v", u, err)
 	}
 }

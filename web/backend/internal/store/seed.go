@@ -11,13 +11,9 @@ func seed(ctx context.Context, tx pgx.Tx) error {
 	for _, u := range []struct{ username, name, role string }{
 		{"somsri", "สมศรี รักษ์บัญชี", "accountant"},
 		{"weera", "วีระ คุมงานดี", "manager"},
+		executiveUser,
 	} {
-		hash, err := HashPassword("1234")
-		if err != nil {
-			return err
-		}
-		if _, err := tx.Exec(ctx, `INSERT INTO users (username, name, role, password_hash) VALUES ($1, $2, $3, $4)`,
-			u.username, u.name, u.role, hash); err != nil {
+		if err := addUser(ctx, tx, u.username, u.name, u.role); err != nil {
 			return err
 		}
 	}
@@ -76,6 +72,20 @@ func seed(ctx context.Context, tx pgx.Tx) error {
 		"EMP-0157": {"days_worked": 11},
 		"EMP-0163": {"days_worked": 13, "ot_hours": 4},
 	})
+}
+
+// executiveUser is the sample executive (partner) login; also added to databases seeded before the role existed.
+var executiveUser = struct{ username, name, role string }{"somchai", "สมชาย ศรีวิวัฒน์", "executive"}
+
+// addUser creates a login with the sample password 1234; an existing username is left untouched.
+func addUser(ctx context.Context, q querier, username, name, role string) error {
+	hash, err := HashPassword("1234")
+	if err != nil {
+		return err
+	}
+	_, err = q.Exec(ctx, `INSERT INTO users (username, name, role, password_hash) VALUES ($1, $2, $3, $4)
+	                      ON CONFLICT (username) DO NOTHING`, username, name, role, hash)
+	return err
 }
 
 func setAttendance(ctx context.Context, tx pgx.Tx, periodID int, byCode map[string]map[string]float64) error {

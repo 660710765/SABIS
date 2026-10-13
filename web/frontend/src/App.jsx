@@ -8,18 +8,21 @@ import Approve from './pages/Approve.jsx';
 import Disburse from './pages/Disburse.jsx';
 import Employees from './pages/Employees.jsx';
 import Payslip from './pages/Payslip.jsx';
+import Summary from './pages/Summary.jsx';
 
 // Pages per role. BR-14 is enforced by the server; this only decides which pages a role can open.
 const NAV = {
   accountant: [
     { path: '/payroll', label: 'คำนวณเงินเดือน', Page: Payroll },
     { path: '/disburse', label: 'จ่ายเงินเดือน', Page: Disburse },
-    { path: '/employees', label: 'พนักงานและอัตราค่าจ้าง', Page: Employees }
+    { path: '/employees', label: 'พนักงานและอัตราค่าจ้าง', Page: Employees },
+    { path: '/summary', label: 'สรุปค่าใช้จ่ายเงินเดือน', Page: Summary }
   ],
   manager: [{ path: '/approve', label: 'อนุมัติการสั่งจ่าย', Page: Approve }],
-  employee: [{ path: '/payslip', label: 'สลิปเงินเดือน', Page: Payslip }]
+  employee: [{ path: '/payslip', label: 'สลิปเงินเดือน', Page: Payslip }],
+  executive: [{ path: '/summary', label: 'สรุปค่าใช้จ่ายเงินเดือน', Page: Summary }]
 };
-const ROLE_NAME = { accountant: 'ฝ่ายบัญชีและการเงิน', manager: 'ผู้จัดการ · ผู้มีอำนาจอนุมัติ', employee: 'พนักงาน' };
+const ROLE_NAME = { accountant: 'ฝ่ายบัญชีและการเงิน', manager: 'ผู้จัดการ · ผู้มีอำนาจอนุมัติ', employee: 'พนักงาน', executive: 'ผู้บริหาร' };
 
 export default function App() {
   const [user, setUser] = useState(undefined); // undefined = still checking the session

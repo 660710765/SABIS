@@ -104,6 +104,15 @@ func (s *Store) migrate(ctx context.Context) error {
 	if n == 0 {
 		return s.inTx(ctx, func(tx pgx.Tx) error { return seed(ctx, tx) })
 	}
+	// Sample data loaded before the executive role existed has no executive login yet.
+	var hasExec bool
+	if err := s.pool.QueryRow(ctx, "SELECT EXISTS (SELECT 1 FROM users WHERE role = 'executive')").Scan(&hasExec); err != nil {
+		return err
+	}
+	if !hasExec {
+		u := executiveUser
+		return addUser(ctx, s.pool, u.username, u.name, u.role)
+	}
 	return nil
 }
 

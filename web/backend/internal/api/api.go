@@ -28,11 +28,12 @@ type handler func(w http.ResponseWriter, r *http.Request, u *store.User) error
 
 var errUnauthorized = &store.AppError{Status: 401, Message: "กรุณาเข้าสู่ระบบ"}
 
-// New returns the API router. BR-14: payroll amounts are visible only to accounting
-// and the approving manager; employees only reach their own payslips.
+// New returns the API router. BR-14: per-employee payroll amounts are visible only to
+// accounting and the approving manager; employees only reach their own payslips, and
+// executives only see company-wide totals per round (/api/reports/summary).
 func New(db *store.Store) http.Handler {
 	s := &Server{db: db}
-	const acc, mgr, emp = "accountant", "manager", "employee"
+	const acc, mgr, emp, exe = "accountant", "manager", "employee", "executive"
 	mux := http.NewServeMux()
 	route := func(pattern string, h handler, roles ...string) {
 		mux.Handle(pattern, s.wrap(h, roles))
@@ -40,7 +41,7 @@ func New(db *store.Store) http.Handler {
 
 	route("POST /api/login", s.login)
 	route("POST /api/logout", s.logout)
-	route("GET /api/me", s.me, acc, mgr, emp)
+	route("GET /api/me", s.me, acc, mgr, emp, exe)
 
 	route("GET /api/periods", s.periods, acc, mgr)
 	route("POST /api/periods", s.createPeriod, acc)
@@ -54,6 +55,8 @@ func New(db *store.Store) http.Handler {
 	route("GET /api/periods/{id}/bank-file", s.bankFile, acc)
 
 	route("GET /api/my/payslips", s.myPayslips, emp)
+
+	route("GET /api/reports/summary", s.costSummary, exe, acc)
 
 	route("GET /api/employees", s.employees, acc)
 	route("PATCH /api/employees/{id}", s.updateEmployee, acc)
@@ -372,6 +375,23 @@ func (s *Server) myPayslips(w http.ResponseWriter, r *http.Request, u *store.Use
 		return err
 	}
 	writeJSON(w, 200, map[string]any{"employee": emp, "payslips": slips})
+	return nil
+}
+
+// ---------- executive report: totals per round only, no per-employee figures (BR-14) ----------
+
+func (s *Server) costSummary(w http.ResponseWriter, r *http.Request, _ *store.User) error {
+	year := 0
+	if q := r.URL.Query().Get("year"); q != "" {
+		if year = integer(q); year < 2000 || year > 2100 {
+			return &store.AppError{Status: 400, Message: "ปีไม่ถูกต้อง"}
+		}
+	}
+	sum, err := s.db.CostSummary(r.Context(), year)
+	if err != nil {
+		return err
+	}
+	writeJSON(w, 200, sum)
 	return nil
 }
 

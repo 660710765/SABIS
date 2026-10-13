@@ -17,10 +17,14 @@ CREATE TABLE IF NOT EXISTS users (
   id            SERIAL PRIMARY KEY,
   username      TEXT NOT NULL UNIQUE,
   name          TEXT NOT NULL,
-  role          TEXT NOT NULL CHECK (role IN ('accountant', 'manager', 'employee')),
+  role          TEXT NOT NULL CONSTRAINT users_role_check CHECK (role IN ('accountant', 'manager', 'employee', 'executive')),
   password_hash TEXT NOT NULL,
   employee_id   INTEGER REFERENCES employees(id)
 );
+
+-- Databases created before the executive role existed: widen the role check in place.
+ALTER TABLE users DROP CONSTRAINT IF EXISTS users_role_check;
+ALTER TABLE users ADD CONSTRAINT users_role_check CHECK (role IN ('accountant', 'manager', 'employee', 'executive'));
 
 -- Login sessions (token is stored as a SHA-256 hash, never in plain text).
 CREATE TABLE IF NOT EXISTS sessions (

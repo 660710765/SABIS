@@ -31,7 +31,7 @@ export default function Login({ onLogin }) {
         <Button type="submit" variant="primary" block disabled={busy}>เข้าสู่ระบบ</Button>
         <div className="login-demo">
           บัญชีทดลอง (รหัสผ่าน <code>1234</code>)<br />
-          ฝ่ายบัญชี <code>somsri</code> · ผู้จัดการ <code>weera</code> · พนักงาน <code>EMP-0142</code>
+          ฝ่ายบัญชี <code>somsri</code> · ผู้จัดการ <code>weera</code> · ผู้บริหาร <code>somchai</code> · พนักงาน <code>EMP-0142</code>
         </div>
       </form>
     </div>
