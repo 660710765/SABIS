@@ -59,7 +59,7 @@ export default function Payroll() {
   if (!detail) {
     return (
       <>
-        <PageHead kicker="คำนวณเงินเดือน · UC-04" title={`รอบ ${sel.round} ${MONTHS[sel.month - 1]} ${sel.year + 543}`}>{picker}</PageHead>
+        <PageHead kicker="คำนวณเงินเดือน" title={`รอบ ${sel.round} ${MONTHS[sel.month - 1]} ${sel.year + 543}`}>{picker}</PageHead>
         <EmptyState title="ยังไม่มีรอบการจ่ายนี้">
           <p className="gt-sub">สร้างรอบเพื่อดึงรายชื่อพนักงานที่ยังทำงานอยู่ ระบบตั้งวันทำงานเริ่มต้นเป็นจำนวนวันทำงานในรอบ (ไม่นับวันอาทิตย์) แล้วแก้ไขตามข้อมูลเวลาจริงได้</p>
           <Button variant="primary" onClick={() => act(() => api('POST', '/api/periods', sel), 'สร้างรอบการจ่ายแล้ว')}>สร้างรอบการจ่าย</Button>
@@ -74,7 +74,7 @@ export default function Payroll() {
 
   return (
     <>
-      <PageHead kicker="คำนวณเงินเดือน · UC-04" title={`สรุปเงินเดือน ${periodLabel(p)}`}>{picker}</PageHead>
+      <PageHead kicker="คำนวณเงินเดือน" title={`สรุปเงินเดือน ${periodLabel(p)}`}>{picker}</PageHead>
       <div className="gt-row"><StatusBadge status={p.status} /></div>
       <ApprovalSteps period={p} />
       <StatusNotice period={p} />
@@ -85,7 +85,7 @@ export default function Payroll() {
           <PayrollTable detail={detail} selected={editing} onEdit={editable ? setEditing : undefined} />
           {editable && (
             <div className="gt-between">
-              <p className="gt-sub">เงินหัก = ขาดงานโดยไม่แจ้ง · ค่าเดินทางไม่รวมในรายได้ (BR-07)</p>
+              <p className="gt-sub">เงินหัก = ขาดงานโดยไม่แจ้ง · ค่าเดินทางไม่รวมในรายได้</p>
               <div className="gt-actions">
                 <Button variant={p.processed ? 'secondary' : 'primary'}
                   onClick={() => act(() => api('POST', `/api/periods/${pid}/process`, {}), 'ประมวลผลเงินเดือนเรียบร้อย')}>
@@ -106,7 +106,7 @@ export default function Payroll() {
                 onSave={(body) => act(() => api('PATCH', `/api/periods/${pid}/attendance/${row.employee_id}`, body), 'บันทึกการแก้ไขแล้ว')} />
             : (
               <section className="gt-card">
-                <h2 className="gt-h3">แก้ไขรายการ · UC-07</h2>
+                <h2 className="gt-h3">แก้ไขรายการ</h2>
                 <p className="gt-sub">กด "แก้ไข" ที่แถวของพนักงานในตารางเพื่อปรับวันทำงาน วันขาด หรือชั่วโมง OT ทุกการแก้ไขต้องระบุเหตุผล</p>
               </section>
             ))}
@@ -118,7 +118,7 @@ export default function Payroll() {
 }
 
 function StatusNotice({ period: p }) {
-  if (p.status === 'returned') return <Notice tone="danger" title="ผู้จัดการส่งกลับให้แก้ไข">{p.return_reason} — แก้ไขข้อมูลแล้วส่งอนุมัติใหม่ (BR-13)</Notice>;
+  if (p.status === 'returned') return <Notice tone="danger" title="ผู้จัดการส่งกลับให้แก้ไข">{p.return_reason} — แก้ไขข้อมูลแล้วส่งอนุมัติใหม่</Notice>;
   if (!p.processed) return <Notice tone="info" title="ยังไม่ได้ประมวลผลเงินเดือนรอบนี้">ตรวจวันทำงาน ขาดงาน และ OT ให้ครบ แล้วกด "ประมวลผลเงินเดือน"</Notice>;
   if (p.status === 'pending') return <Notice tone="warning" title="รอผู้จัดการอนุมัติ">รายการถูกล็อกระหว่างรออนุมัติ</Notice>;
   if (p.status === 'approved') return <Notice tone="info" title="ผู้จัดการอนุมัติแล้ว">ไปที่เมนู "จ่ายเงินเดือน" เพื่อดำเนินการจ่าย</Notice>;
@@ -142,15 +142,15 @@ function EditPanel({ row, processed, onSave, onClose }) {
       if (await onSave(form)) setForm((f) => ({ ...f, reason: '' }));
     }}>
       <div className="gt-between">
-        <h2 className="gt-h3">แก้ไขรายการ · UC-07</h2>
+        <h2 className="gt-h3">แก้ไขรายการ</h2>
         <button type="button" className="link-btn" onClick={onClose}>ปิด</button>
       </div>
       <div className="gt-row"><span style={{ fontWeight: 600 }}>{row.name}</span><span className="gp-code">{row.code}</span><PayTag kind={row.type} /></div>
       <Field label="วันทำงานจริง" suffix="วัน" {...num} value={form.days_worked} onChange={set('days_worked')} />
       <Field label="ขาดงานโดยไม่แจ้ง" suffix="วัน" {...num} value={form.absent_days} onChange={set('absent_days')}
         hint={row.type === 'monthly'
-          ? 'หักเงินเดือนวันละ 1/30 ของเงินเดือน (BR-10) · ลากิจที่อนุมัติแล้วไม่ต้องกรอก (BR-09)'
-          : 'รายวันไม่นับวันขาดเป็นวันทำงาน (BR-10)'} />
+          ? 'หักเงินเดือนวันละ 1/30 ของเงินเดือน · ลากิจที่อนุมัติแล้วไม่ต้องกรอก'
+          : 'รายวันไม่นับวันขาดเป็นวันทำงาน'} />
       <Field label="ชั่วโมง OT" suffix="ชม." {...num} value={form.ot_hours} onChange={set('ot_hours')} hint="คิด 1.5 เท่าของค่าจ้างต่อชั่วโมง" />
       <Field label="เหตุผลในการแก้ไข" multiline required value={form.reason} onChange={set('reason')}
         placeholder="เช่น ผู้จัดการยืนยันว่าทำ OT วันที่ 28 เพิ่ม 2 ชม."

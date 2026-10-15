@@ -71,7 +71,7 @@ function EmployeeForm({ emp, onSave, onClose }) {
         options={[['monthly', 'พนักงานรายเดือน (โอนเข้าบัญชี)'], ['daily', 'พนักงานรายวัน (เงินสด)']]} />
       <Field label="อัตราค่าจ้าง" type="number" min="0" step="0.01" required suffix="บาท" value={form.rate} onChange={set('rate')}
         hint="รายเดือน = เงินเดือนต่อเดือน · รายวัน = ค่าจ้างต่อวัน" />
-      <Field label="ธนาคาร" value={form.bank} onChange={set('bank')} hint="จำเป็นสำหรับพนักงานรายเดือน (BR-03)" />
+      <Field label="ธนาคาร" value={form.bank} onChange={set('bank')} hint="จำเป็นสำหรับพนักงานรายเดือน" />
       <Field label="เลขบัญชี" value={form.account} onChange={set('account')} />
       <Field label="สถานะ" value={form.active} onChange={set('active')}
         options={[[1, 'ทำงานอยู่'], [0, 'พ้นสภาพ (ไม่ดึงเข้ารอบใหม่)']]} />

@@ -27,7 +27,7 @@ export default function Disburse() {
   if (!detail) {
     return (
       <>
-        <PageHead kicker="จ่ายเงินเดือน · UC-09" title="ไม่มีรอบที่พร้อมจ่าย" />
+        <PageHead kicker="จ่ายเงินเดือน" title="ไม่มีรอบที่พร้อมจ่าย" />
         <EmptyState><p className="gt-sub">ต้องรอการอนุมัติจากผู้จัดการก่อนจึงจะสามารถจ่ายเงินได้</p></EmptyState>
       </>
     );
@@ -40,7 +40,7 @@ export default function Disburse() {
 
   return (
     <>
-      <PageHead kicker="จ่ายเงินเดือน · UC-09" title={`สั่งจ่าย ${periodLabel(p)}`}><StatusBadge status={p.status} /></PageHead>
+      <PageHead kicker="จ่ายเงินเดือน" title={`สั่งจ่าย ${periodLabel(p)}`}><StatusBadge status={p.status} /></PageHead>
       <div className="no-print"><PeriodList list={list} selectedId={id} onSelect={select} /></div>
       <ApprovalSteps period={p} />
       {paid && <Notice tone="success" title="จ่ายเงินเรียบร้อยแล้ว">บันทึกโดย {p.paid_by} · {when(p.paid_at)} — พนักงานดู e-Payslip ได้แล้ว</Notice>}

@@ -55,7 +55,7 @@ func validateEmployee(in *EmployeeInput) error {
 		return appErr(400, "อัตราค่าจ้างต้องมากกว่า 0")
 	}
 	if in.Type == "monthly" && (in.Bank == "" || in.Account == "") {
-		return appErr(400, "พนักงานรายเดือนต้องมีธนาคารและเลขบัญชีสำหรับโอนเงิน (BR-03)")
+		return appErr(400, "พนักงานรายเดือนต้องมีธนาคารและเลขบัญชีสำหรับโอนเงิน")
 	}
 	return nil
 }

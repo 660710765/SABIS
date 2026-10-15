@@ -15,7 +15,7 @@ export default function Approve() {
   if (!detail) {
     return (
       <>
-        <PageHead kicker="อนุมัติการสั่งจ่าย · UC-08" title="ไม่มีรอบที่รออนุมัติ" />
+        <PageHead kicker="อนุมัติการสั่งจ่าย" title="ไม่มีรอบที่รออนุมัติ" />
         <EmptyState><p className="gt-sub">เมื่อฝ่ายบัญชีส่งยอดเงินเดือนเข้าขั้นตอนอนุมัติ รายการจะแสดงที่นี่</p></EmptyState>
       </>
     );
@@ -32,7 +32,7 @@ export default function Approve() {
 
   return (
     <>
-      <PageHead kicker="อนุมัติการสั่งจ่าย · UC-08" title={`อนุมัติเงินเดือน ${periodLabel(p)}`}>
+      <PageHead kicker="อนุมัติการสั่งจ่าย" title={`อนุมัติเงินเดือน ${periodLabel(p)}`}>
         <StatusBadge status={p.status} />
       </PageHead>
       {list.length > 1 && <PeriodList list={list} selectedId={id} onSelect={select} />}
@@ -53,7 +53,7 @@ export default function Approve() {
             ) : (
               <>
                 <h2 className="gt-h3">อนุมัติแล้ว · รอฝ่ายบัญชีจ่ายเงิน</h2>
-                <p className="gt-sub">อนุมัติโดย {p.approved_by} · {when(p.approved_at)} หากพบข้อผิดพลาดก่อนจ่าย ส่งกลับให้ฝ่ายบัญชีแก้ไขได้ (BR-13)</p>
+                <p className="gt-sub">อนุมัติโดย {p.approved_by} · {when(p.approved_at)} หากพบข้อผิดพลาดก่อนจ่าย ส่งกลับให้ฝ่ายบัญชีแก้ไขได้</p>
               </>
             )}
             <Field label="เหตุผลที่ส่งกลับ" multiline value={reason} onChange={(e) => setReason(e.target.value)}

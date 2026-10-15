@@ -186,7 +186,7 @@ func TestLoginAndEmployees(t *testing.T) {
 	}
 
 	_, err = s.CreateEmployee(ctx, EmployeeInput{Name: "ทดสอบ", Type: "monthly", Rate: 20000})
-	wantErr(t, err, "BR-03")
+	wantErr(t, err, "à¹à¸¥à¸à¸à¸±à¸à¸à¸µ")
 	e, err := s.CreateEmployee(ctx, EmployeeInput{Name: "ทดสอบ ระบบ", Type: "daily", Rate: 500})
 	if err != nil || e.Code != "EMP-0164" {
 		t.Fatalf("create employee: %+v %v", e, err)
